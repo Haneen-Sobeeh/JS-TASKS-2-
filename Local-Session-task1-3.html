@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration and Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            margin-top: 15px;
+        }
+        .form-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>User Registration and Login</h1>
+        
+        <div id="registrationSection" class="form-section" style="display: block;">
+            <h2>Registration Form</h2>
+            <form id="registrationForm">
+
+                <label for="fname">First Name:</label>
+                <input type="text" id="fname" name="fname" required>
+
+                <label for="lname">Last Name:</label>
+                <input type="text" id="lname" name="lname" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="regEmail" name="email" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="regPassword" name="password" required>
+
+                <button type="button" onclick="registerUser()">Submit</button>
+            </form>
+
+            <p id="regResult" class="error"></p>
+            <button onclick="showLogin()">Already have an account? Login</button>
+        </div>
+
+        <div id="loginSection" class="form-section">
+            <h2>Login Form</h2>
+            <form id="loginForm">
+
+                <label for="email">Email:</label>
+                <input type="email" id="loginEmail" name="email" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="loginPassword" name="password" required>
+
+                <button type="button" onclick="loginUser()">Login</button>
+            </form>
+
+            <p id="loginResult" class="error"></p>
+            <button onclick="showRegistration()">Don't have an account? Register</button>
+        </div>
+    </div>
+
+    <script>
+        function registerUser() {
+            const firstName = document.getElementById("fname").value;
+            const lastName = document.getElementById("lname").value;
+            const email = document.getElementById("regEmail").value;
+            const password = document.getElementById("regPassword").value;
+
+            // Get existing users from local storage or initialize an empty array
+            const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Create new user object
+            const newUser = { firstName, lastName, email, password };
+            
+            // Add new user to the array and save back to local storage
+            existingUsers.push(newUser);
+            localStorage.setItem('users', JSON.stringify(existingUsers));
+
+            document.getElementById("regResult").innerHTML = "Registration successful!";
+            document.getElementById("regResult").style.color = "green";
+        }
+
+        function loginUser() {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            // Retrieve users from local storage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Check if user exists with matching email and password
+            const userExists = users.some(user => user.email === email && user.password === password);
+
+            if (userExists) {
+                document.getElementById("loginResult").innerHTML = "Login successful!";
+                document.getElementById("loginResult").style.color = "green";
+            } else {
+                document.getElementById("loginResult").innerHTML = "Invalid email or password.";
+                document.getElementById("loginResult").style.color = "red";
+            }
+        }
+
+        function showLogin() {
+            document.getElementById("registrationSection").style.display = "none";
+            document.getElementById("loginSection").style.display = "block";
+        }
+
+        function showRegistration() {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("registrationSection").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>

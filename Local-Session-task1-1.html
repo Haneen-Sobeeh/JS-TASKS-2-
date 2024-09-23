@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Registration Form</h1>
+        <form id="registrationForm">
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+
+            <label for="age">Age:</label>
+            <input type="text" id="age" name="age">
+
+            <label>Gender:</label>
+            <input type="radio" id="male" name="gender" value="Male">
+            <label for="male">Male</label>
+            <input type="radio" id="female" name="gender" value="Female">
+            <label for="female">Female</label><br>
+
+            <label for="bd">Brief Description:</label>
+            <input type="text" id="bd" name="bd">
+
+            <label for="major">Your major and university:</label>
+            <input type="text" id="major" name="major"><br><br>
+
+            <label>Skills:</label>
+            <input type="checkbox" id="html" name="skills" value="HTML">
+            <label for="html">HTML</label><br>
+            <input type="checkbox" id="css" name="skills" value="CSS">
+            <label for="css">CSS</label><br>
+            <input type="checkbox" id="js" name="skills" value="JS">
+            <label for="js">JavaScript</label><br><br>
+
+            <button type="button" onclick="validateForm()">Submit</button>
+        </form>
+
+        <p id="result" class="error"></p>
+
+        <!-- Placeholder for the user card -->
+        <div id="userCardContainer"></div>
+    </div>
+
+    <script>
+        function validateForm() {
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+            const gender = document.querySelector('input[name="gender"]:checked');
+            const major = document.getElementById("major").value;
+            const description = document.getElementById("bd").value;
+            const skills = document.querySelectorAll('input[name="skills"]:checked');
+            const result = document.getElementById("result");
+
+            // Clear previous error message
+            result.textContent = "";
+
+            // Simple validation rules
+            if (name === "") {
+                result.textContent = "Please enter your name.";
+                return false;
+            }
+            if (age === "" || isNaN(age)) {
+                result.textContent = "Please enter a valid age.";
+                return false;
+            }
+            if (!gender) {
+                result.textContent = "Please select your gender.";
+                return false;
+            }
+            if (major === "") {
+                result.textContent = "Please enter your major and university.";
+                return false;
+            }
+            if (description === "") {
+                result.textContent = "Please provide a brief description.";
+                return false;
+            }
+            if (skills.length === 0) {
+                result.textContent = "Please select at least one skill.";
+                return false;
+            }
+
+            // If all validations pass
+            result.textContent = "Form submitted successfully!";
+            result.style.color = "green";
+
+            const genderValue = gender.value;
+
+            // Prepare skills array
+            const skillsArray = [];
+            skills.forEach(skill => skillsArray.push(skill.value));
+
+            // Store in local storage
+            const user = {
+                name,
+                age,
+                gender: genderValue,
+                major,
+                description,
+                skills: skillsArray
+            };
+
+            const jsoninfo = JSON.stringify(user);
+            localStorage.setItem("user", jsoninfo);
+
+            // Call the function to render the user's data on the page
+            renderUserData(user);
+        }
+
+        // Function to render user data as a card
+        function renderUserData(user) {
+            const container = document.getElementById("userCardContainer");
+
+            // Clear the container to avoid adding multiple cards
+            container.innerHTML = "";
+
+            // Create the card
+            const card = document.createElement("div");
+            card.style.border = "1px solid #ccc";
+            card.style.borderRadius = "8px";
+            card.style.padding = "20px";
+            card.style.marginTop = "20px";
+            card.style.backgroundColor = "#fff";
+            card.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.1)";
+
+            // Populate the card with the user's data
+            card.innerHTML = `
+                <h2>${user.name}</h2>
+                <p><strong>Age:</strong> ${user.age}</p>
+                <p><strong>Gender:</strong> ${user.gender}</p>
+                <p><strong>Major:</strong> ${user.major}</p>
+                <p><strong>Description:</strong> ${user.description}</p>
+                <p><strong>Skills:</strong> ${user.skills.join(", ")}</p>
+            `;
+
+            // Append the card to the container
+            container.appendChild(card);
+        }
+    </script>
+
+</body>
+</html>

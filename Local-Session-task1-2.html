@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .project-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Submit Project Information</h1>
+        <form id="projectForm">
+            <label for="subject">Project Subject:</label>
+            <input type="text" id="subject" name="subject" placeholder="Enter project subject">
+
+            <label for="description">Project Description:</label>
+            <textarea id="description" name="description" rows="4" placeholder="Enter project description"></textarea>
+
+            <label for="userTypes">User Types:</label>
+            <input type="text" id="userTypes" name="userTypes" placeholder="Enter user types (e.g. Admin, Customer)">
+
+            <label for="technology">Technology Used:</label>
+            <input type="text" id="technology" name="technology" placeholder="Enter technology used (e.g. HTML, CSS, JavaScript)">
+
+            <button type="button" onclick="submitProject()">Submit</button>
+        </form>
+
+        <!-- Placeholder for rendering project cards -->
+        <div id="projectCardContainer"></div>
+    </div>
+
+    <script>
+        function submitProject() {
+            // Get form values
+            const subject = document.getElementById("subject").value;
+            const description = document.getElementById("description").value;
+            const userTypes = document.getElementById("userTypes").value;
+            const technology = document.getElementById("technology").value;
+
+            // Validate form
+            if (!subject || !description || !userTypes || !technology) {
+                alert("Please fill out all fields.");
+                return;
+            }
+
+            // Create project object
+            const project = {
+                subject,
+                description,
+                userTypes,
+                technology
+            };
+
+            // Store in session storage
+            const projects = JSON.parse(sessionStorage.getItem("projects")) || [];
+            projects.push(project);
+            sessionStorage.setItem("projects", JSON.stringify(projects));
+
+            // Render the projects to the web page
+            renderProjects();
+        }
+
+        function renderProjects() {
+            const container = document.getElementById("projectCardContainer");
+            container.innerHTML = ""; // Clear previous entries
+
+            const projects = JSON.parse(sessionStorage.getItem("projects")) || [];
+
+            projects.forEach((project, index) => {
+                // Create card for each project
+                const card = document.createElement("div");
+                card.classList.add("project-card");
+
+                card.innerHTML = `
+                    <h2>${project.subject}</h2>
+                    <p><strong>Description:</strong> ${project.description}</p>
+                    <p><strong>User Types:</strong> ${project.userTypes}</p>
+                    <p><strong>Technology Used:</strong> ${project.technology}</p>
+                `;
+
+                // Append card to the container
+                container.appendChild(card);
+            });
+        }
+
+        // Render projects on page load (in case there are any stored in session)
+        window.onload = function() {
+            renderProjects();
+        };
+    </script>
+
+</body>
+</html>
